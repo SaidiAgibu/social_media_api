@@ -1,0 +1,50 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 500MB
+      max-request-size: 600MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    url: jdbc:mysql://localhost:3306/social_media
+    password: codevirtus7580
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: 'false'
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  mail:
+    host: smtp.office365.com
+    port: 587
+    username: codevirtus100@outlook.com
+    password: saididaudi2001
+    default-encoding: UTF-8
+    properties:
+      mail:
+        mime :
+          charset : UTF
+        smtp:
+          auth : true
+          starttls:
+            enable : true
+server:
+  port: 9000
+
+
+
+#cloudinary
+cloudinary_cloud_name: du0h7gbzh
+cloudinary_api-key : 222773423746569
+cloudinary_api-secret : m7vjT1Wn1t2Z1e3tTGL3NBeG0Rw
+
+#news api
+news_api_key : a369658e7b574e5f96fd12fd2f42f423
+
+
+#email host
+VERIFY_EMAIL_HOST : http://localhost:9000
+
