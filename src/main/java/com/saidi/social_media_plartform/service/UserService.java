@@ -58,4 +58,6 @@ public interface UserService {
     public ResponseEntity<List<String>> getFollowing() throws NotFoundException;
 
     public ResponseEntity<?> unFollowUser(String username) throws NotFoundException;
+
+    public ResponseEntity<?> sentMessage(Long id, MessageDto messageDto) throws NotFoundException;
 }

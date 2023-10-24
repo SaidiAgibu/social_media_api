@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 public class UserServiceImplementation implements UserService{
 
 
-
     private FollowerRepository followerRepository;
     private CommentRepository commentRepository;
     private UserRepository userRepository;
@@ -48,9 +47,10 @@ public class UserServiceImplementation implements UserService{
     private CloudinaryImageService cloudinaryImageService;
     private PostRepository postRepository;
     private LikeRepository likeRepository;
+    private MessageRepository messageRepository;
 
     @Autowired
-    public UserServiceImplementation(FollowerRepository followerRepository, CommentRepository commentRepository,LikeRepository likeRepository,PostRepository postRepository,UserRepository userRepository, RoleRepository roleRepository, ConfirmationRepository confirmationRepository, ProfileImageRepository profileImageRepository, PasswordEncoder passwordEncoder, EmailService emailService, AuthenticationManager authenticationManager, JWTGenerator jwtGenerator,CloudinaryImageService cloudinaryImageService) {
+    public UserServiceImplementation(MessageRepository messageRepository,FollowerRepository followerRepository, CommentRepository commentRepository,LikeRepository likeRepository,PostRepository postRepository,UserRepository userRepository, RoleRepository roleRepository, ConfirmationRepository confirmationRepository, ProfileImageRepository profileImageRepository, PasswordEncoder passwordEncoder, EmailService emailService, AuthenticationManager authenticationManager, JWTGenerator jwtGenerator,CloudinaryImageService cloudinaryImageService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.confirmationRepository = confirmationRepository;
@@ -64,7 +64,7 @@ public class UserServiceImplementation implements UserService{
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
         this.followerRepository = followerRepository;
-
+        this.messageRepository = messageRepository;
 
     }
 
@@ -423,6 +423,28 @@ public class UserServiceImplementation implements UserService{
 
 
 
+    }
+
+    @Override
+    public ResponseEntity<?> sentMessage(Long id, MessageDto messageDto) throws NotFoundException {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            User loggedInUser = userRepository.findByEmailIgnoreCase(userDetails.getUsername())
+                    .orElseThrow(() -> new NotFoundException("User not found"));
+
+            Optional<User> user = userRepository.findById(id);
+            if(user.isPresent()) {
+                Messages message = new Messages();
+                message.setSender(loggedInUser.getUsername());
+                message.setReceiver(user.get().getUsername());
+                message.setMessage(messageDto.getMessage());
+
+                messageRepository.save(message);
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
     }
 
 
